@@ -18,9 +18,6 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
-ENV HOSTNAME=0.0.0.0
-ENV PORT=8080
-
 EXPOSE 8080
 
-CMD ["sh", "-c", "npx next start -p $PORT -H $HOSTNAME"]
+CMD ["npx", "next", "start", "-p", "8080", "-H", "0.0.0.0"]
