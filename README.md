@@ -67,8 +67,6 @@ ecommerce-project/
 │   ├── prompt_log.md       # AI Prompt 交互日志
 │   ├── code_review.md      # AI 代码审查报告
 │   └── personal_summary.md # 个人实训总结
-├── frontend/                # 原始 Next.js 前端（已废弃，保留作参考）
-├── screenshots/             # 接口测试截图
 ├── .gitignore
 └── README.md
 ```
