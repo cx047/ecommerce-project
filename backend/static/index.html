@@ -705,6 +705,10 @@ input { font-family: inherit; }
 const API_BASE = '/api';
 const CATEGORY_MAP = {'electronics': '数码电子', 'clothing': '服饰穿搭', 'home': '家居生活'};
 function catLabel(key) { return CATEGORY_MAP[key] || key; }
+var IMG_SM = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZTVlN2ViIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzljYTNhZiI+Tm8gSW1hZ2U8L3RleHQ+PC9zdmc+';
+var IMG_LG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNDUwIiBmaWxsPSIjZTVlN2ViIj48cmVjdCB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQ1MCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzljYTNhZiI+Tm8gSW1hZ2U8L3RleHQ+PC9zdmc+';
+var IMG_XS1 = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgZmlsbD0iI2U1ZTdlYiI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIiBmb250LXNpemU9IjEyIiBmaWxsPSIjOWNhM2FmIj5OL0E8L3RleHQ+PC9zdmc+';
+var IMG_XS2 = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NiIgaGVpZ2h0PSI1NiIgZmlsbD0iI2U1ZTdlYiI+PHJlY3Qgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIiBmb250LXNpemU9IjEwIiBmaWxsPSIjOWNhM2FmIj5OL0E8L3RleHQ+PC9zdmc+';
 
 function getSessionId() {
   let sid = localStorage.getItem('session_id');
@@ -978,10 +982,10 @@ async function loadProducts(category, search) {
 
     var html = '';
     products.forEach(function(p) {
-      var imgSrc = p.image_url || 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" fill="%23e5e7eb"><rect width="400" height="300"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="18" fill="%239ca3af">暂无图片</text></svg>');
+      var imgSrc = p.image_url || IMG_SM;
       var desc = p.description || '';
       html += '<div class="product-card" onclick="navigate(\'product/' + p.id + '\')">';
-      html += '  <div class="img-wrap"><img src="' + imgSrc + '" alt="' + (p.name || '') + '" loading="lazy" onerror="this.src=\'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" fill="%23e5e7eb"><rect width="400" height="300"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="18" fill="%239ca3af">暂无图片</text></svg>') + '\'"/></div>';
+      html += '  <div class="img-wrap"><img src="' + imgSrc + '" alt="' + (p.name || '') + '" loading="lazy" onerror="this.src=IMG_SM"/></div>';
       html += '  <div class="info">';
       html += '    <div class="name">' + (p.name || '') + '</div>';
       html += '    <div class="desc">' + desc + '</div>';
@@ -1023,12 +1027,12 @@ async function renderProductPage(app, productId) {
     }
     var p = res.data;
     var stockInfo = getStockInfo(p.stock || 0);
-    var imgSrc = p.image_url || 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" fill="%23e5e7eb"><rect width="600" height="450"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="24" fill="%239ca3af">暂无图片</text></svg>');
+    var imgSrc = p.image_url || IMG_LG;
 
     var html = '<div class="container"><div class="detail-page">';
     html += '  <div class="detail-back" onclick="navigate(\'home\')">&#8592; 返回首页</div>';
     html += '  <div class="detail-card">';
-    html += '    <div class="detail-image"><img src="' + imgSrc + '" alt="' + (p.name || '') + '" onerror="this.src=\'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" fill="%23e5e7eb"><rect width="600" height="450"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="24" fill="%239ca3af">暂无图片</text></svg>') + '\'"/></div>';
+    html += '    <div class="detail-image"><img src="' + imgSrc + '" alt="' + (p.name || '') + '" onerror="this.src=IMG_LG"/></div>';
     html += '    <div class="detail-info">';
     html += '      <div class="name">' + (p.name || '') + '</div>';
     html += '      <div class="price">' + (p.price || 0).toFixed(2) + '</div>';
@@ -1078,7 +1082,7 @@ async function renderCartPage(app) {
     items.forEach(function(item) {
       var subtotal = item.price * item.quantity;
       total += subtotal;
-      var imgSrc = (item.product && item.product.image_url) || item.image_url || 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="%23e5e7eb"><rect width="80" height="80"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="12" fill="%239ca3af">N/A</text></svg>');
+      var imgSrc = (item.product && item.product.image_url) || item.image_url || IMG_XS1;
       var pName = (item.product && item.product.name) || item.name || '未知商品';
 
       itemsHtml += '<div class="cart-item" data-id="' + item.id + '">';
@@ -1242,7 +1246,7 @@ async function renderOrdersPage(app) {
         var price = item.price || 0;
         var subtotal = price * qty;
         orderTotal += subtotal;
-        var imgSrc = (item.product && item.product.image_url) || item.image_url || 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="%23e5e7eb"><rect width="56" height="56"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="10" fill="%239ca3af">N/A</text></svg>');
+        var imgSrc = (item.product && item.product.image_url) || item.image_url || IMG_XS2;
 
         itemsHtml += '<div class="order-item">';
         itemsHtml += '  <div class="oi-img"><img src="' + imgSrc + '" alt="' + pName + '" onerror="this.style.display=\'none\'"/></div>';
