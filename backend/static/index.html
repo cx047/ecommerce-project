@@ -219,7 +219,6 @@ input { font-family: inherit; }
   color: var(--primary);
   margin-bottom: 12px;
 }
-.product-card .price::before { content: "\xa5"; font-size: 14px; }
 .product-card .btn-cart {
   width: 100%;
   padding: 10px;
@@ -275,7 +274,7 @@ input { font-family: inherit; }
 }
 .detail-info .name { font-size: 28px; font-weight: 700; color: var(--gray-900); }
 .detail-info .price { font-size: 32px; font-weight: 700; color: var(--primary); }
-.detail-info .price::before { content: "\xa5"; font-size: 20px; }
+/* removed ::before - using inline \u00a5 */
 .detail-info .desc { font-size: 15px; color: var(--gray-600); line-height: 1.7; }
 .detail-info .meta {
   display: flex;
@@ -359,7 +358,6 @@ input { font-family: inherit; }
   white-space: nowrap;
 }
 .cart-item .item-price { font-size: 14px; color: var(--gray-500); margin-top: 4px; }
-.cart-item .item-price::before { content: "\xa5"; }
 .qty-control {
   display: flex;
   align-items: center;
@@ -396,9 +394,8 @@ input { font-family: inherit; }
   font-weight: 700;
   color: var(--primary);
   min-width: 90px;
-  text-align: right;
+    text-align: right;
 }
-.cart-item .subtotal::before { content: "\xa5"; }
 .cart-item .item-remove {
   width: 36px; height: 36px;
   border: none;
@@ -431,7 +428,7 @@ input { font-family: inherit; }
   font-weight: 700;
   color: var(--primary);
 }
-.cart-footer .total-amount::before { content: "\xa5"; }
+.cart-footer .total { font-size: 18px; color: var(--gray-700); }
 .cart-actions { display: flex; gap: 12px; }
 .btn {
   padding: 12px 24px;
@@ -559,7 +556,6 @@ input { font-family: inherit; }
 .order-item .oi-name { font-size: 14px; font-weight: 600; color: var(--gray-800); }
 .order-item .oi-qty { font-size: 13px; color: var(--gray-500); }
 .order-item .oi-price { font-size: 14px; font-weight: 600; color: var(--primary); min-width: 80px; text-align: right; }
-.order-item .oi-price::before { content: "\xa5"; }
 .order-footer {
   display: flex;
   align-items: center;
@@ -570,7 +566,6 @@ input { font-family: inherit; }
 }
 .order-footer .total-label { font-size: 14px; color: var(--gray-500); }
 .order-footer .total-value { font-size: 18px; font-weight: 700; color: var(--primary); }
-.order-footer .total-value::before { content: "\xa5"; }
 
 /* ===== Empty State ===== */
 .empty-state {
@@ -998,7 +993,7 @@ async function loadProducts(category, search) {
       html += '  <div class="info">';
       html += '    <div class="name">' + (p.name || '') + '</div>';
       html += '    <div class="desc">' + desc + '</div>';
-      html += '    <div class="price">' + (p.price || 0).toFixed(2) + '</div>';
+      html += '    <div class="price">\u00a5' + (p.price || 0).toFixed(2) + '</div>';
       var hasSpecs = p.specifications && Array.isArray(p.specifications) && p.specifications.length > 0;
       html += '    <button class="btn-cart" onclick="event.stopPropagation(); addToCartFromHome(' + p.id + ', ' + hasSpecs + ')">加入购物车</button>';
       html += '  </div>';
@@ -1053,7 +1048,7 @@ async function renderProductPage(app, productId) {
     html += '    <div class="detail-image"><img src="' + imgSrc + '" alt="' + (p.name || '') + '" onerror="this.src=IMG_LG"/></div>';
     html += '    <div class="detail-info">';
     html += '      <div class="name">' + (p.name || '') + '</div>';
-    html += '      <div class="price">' + (p.price || 0).toFixed(2) + '</div>';
+    html += '      <div class="price">\u00a5' + (p.price || 0).toFixed(2) + '</div>';
     html += '      <div class="desc">' + (p.description || '暂无描述') + '</div>';
     html += '      <div class="meta">';
     html += '        <div class="meta-item"><span class="meta-label">分类：</span>' + catLabel(p.category || '未分类') + '</div>';
@@ -1143,7 +1138,8 @@ async function renderCartPage(app) {
     var total = 0;
     var itemsHtml = '';
     items.forEach(function(item) {
-      var subtotal = item.price * item.quantity;
+      var price = (item.product && item.product.price) || item.price || 0;
+      var subtotal = price * item.quantity;
       total += subtotal;
       var imgSrc = (item.product && item.product.image_url) || item.image_url || IMG_XS1;
       var pName = (item.product && item.product.name) || item.name || '未知商品';
@@ -1152,7 +1148,7 @@ async function renderCartPage(app) {
       itemsHtml += '  <div class="item-img"><img src="' + imgSrc + '" alt="' + pName + '" onerror="this.style.display=\'none\'"/></div>';
       itemsHtml += '  <div class="item-info">';
       itemsHtml += '    <div class="item-name">' + pName + '</div>';
-      itemsHtml += '    <div class="item-price">' + (item.price || 0).toFixed(2) + '</div>';
+      itemsHtml += '    <div class="item-price">\u00a5' + price.toFixed(2) + '</div>';
       if (item.spec_details) {
         itemsHtml += '    <div class="item-specs">' + item.spec_details + '</div>';
       }
@@ -1162,7 +1158,7 @@ async function renderCartPage(app) {
       itemsHtml += '    <input class="qty-value" value="' + item.quantity + '" readonly />';
       itemsHtml += '    <button class="qty-btn" onclick="updateCartQty(' + item.id + ', ' + (item.quantity + 1) + ')">+</button>';
       itemsHtml += '  </div>';
-      itemsHtml += '  <div class="subtotal">' + subtotal.toFixed(2) + '</div>';
+      itemsHtml += '  <div class="subtotal">\u00a5' + subtotal.toFixed(2) + '</div>';
       itemsHtml += '  <button class="item-remove" onclick="removeCartItem(' + item.id + ')">&#10005;</button>';
       itemsHtml += '</div>';
     });
@@ -1171,7 +1167,7 @@ async function renderCartPage(app) {
     html += '<h2>购物车</h2>';
     html += '<div class="cart-table">' + itemsHtml;
     html += '  <div class="cart-footer">';
-    html += '    <div class="total">合计：<span class="total-amount">' + total.toFixed(2) + '</span></div>';
+    html += '    <div class="total">\u00a5' + total.toFixed(2) + '</div>';
     html += '    <div class="cart-actions">';
     html += '      <button class="btn btn-outline" onclick="clearCart()">清空购物车</button>';
     html += '      <button class="btn btn-primary" onclick="openCheckoutModal()">提交订单</button>';
@@ -1323,7 +1319,7 @@ async function renderOrdersPage(app) {
           itemsHtml += '    <div class="oi-specs">' + item.spec_details + '</div>';
         }
         itemsHtml += '  </div>';
-        itemsHtml += '  <div class="oi-price">' + price.toFixed(2) + '</div>';
+        itemsHtml += '  <div class="oi-price">\u00a5' + price.toFixed(2) + '</div>';
         itemsHtml += '</div>';
       });
 
@@ -1337,7 +1333,7 @@ async function renderOrdersPage(app) {
       html += '  <div class="order-body">' + itemsHtml + '</div>';
       html += '  <div class="order-footer">';
       html += '    <span class="total-label">订单总额：</span>';
-      html += '    <span class="total-value">' + orderTotal.toFixed(2) + '</span>';
+      html += '    <span class="total-value">\u00a5' + orderTotal.toFixed(2) + '</span>';
       html += '  </div>';
       html += '</div>';
     });
