@@ -126,6 +126,132 @@ def seed_database():
                 {'name': '颜色', 'options': ['白色', '黑色']},
                 {'name': '功率', 'options': ['10W', '15W']}
             ])
+        },
+        # ===== 美妆个护 =====
+        {
+            'name': '丝绒哑光口红',
+            'description': '持久不脱色哑光口红，丝绒质地，显色饱满。含植物精油，滋润不拔干。多种色号可选，适合各种肤色。',
+            'price': 149.00,
+            'image_url': '/images/lipstick.jpg',
+            'category': 'beauty',
+            'stock': 120,
+            'specifications': json.dumps([
+                {'name': '色号', 'options': ['正红', '豆沙', '枫叶红', '姨妈红']},
+                {'name': '质地', 'options': ['哑光', '滋润']}
+            ])
+        },
+        {
+            'name': '玻尿酸保湿面膜套装',
+            'description': '含高浓度玻尿酸，深层补水保湿。一片即见效，改善干燥粗糙。温和无刺激，适合敏感肌。',
+            'price': 99.00,
+            'image_url': '/images/facemask.jpg',
+            'category': 'beauty',
+            'stock': 200,
+            'specifications': json.dumps([
+                {'name': '规格', 'options': ['10片装', '20片装', '30片装']},
+                {'name': '功效', 'options': ['补水', '美白', '抗皱']}
+            ])
+        },
+        {
+            'name': '优雅女士香水',
+            'description': '法式调香，前调柑橘清新，中调花香优雅，后调木质温暖。留香持久8小时，适合日常和约会。',
+            'price': 359.00,
+            'image_url': '/images/perfume.jpg',
+            'category': 'beauty',
+            'stock': 45,
+            'specifications': json.dumps([
+                {'name': '容量', 'options': ['30ml', '50ml', '100ml']},
+                {'name': '香调', 'options': ['花香', '果香', '木质']}
+            ])
+        },
+        # ===== 运动户外 =====
+        {
+            'name': '专业瑜伽垫',
+            'description': 'TPE环保材质，防滑双面设计。加厚6mm，回弹好护膝盖。自带绑带，携带方便。适合瑜伽、普拉提。',
+            'price': 129.00,
+            'image_url': '/images/yogamat.jpg',
+            'category': 'sports',
+            'stock': 80,
+            'specifications': json.dumps([
+                {'name': '颜色', 'options': ['紫色', '蓝色', '粉色', '灰色']},
+                {'name': '厚度', 'options': ['6mm', '8mm', '10mm']}
+            ])
+        },
+        {
+            'name': '保温运动水壶',
+            'description': '316不锈钢内胆，12小时保温保冷。500ml大容量，一键弹盖，便携挂绳。防漏设计，运动出行必备。',
+            'price': 89.00,
+            'image_url': '/images/waterbottle.jpg',
+            'category': 'sports',
+            'stock': 150,
+            'specifications': json.dumps([
+                {'name': '颜色', 'options': ['深蓝', '墨绿', '橙色', '白色']},
+                {'name': '容量', 'options': ['500ml', '750ml', '1000ml']}
+            ])
+        },
+        # ===== 食品生鲜 =====
+        {
+            'name': '精选坚果礼盒',
+            'description': '7种坚果组合，每日坚果。含夏威夷果、巴旦木、腰果、核桃等。独立小包装，新鲜锁味。送礼自用两相宜。',
+            'price': 168.00,
+            'image_url': '/images/nuts.jpg',
+            'category': 'food',
+            'stock': 100,
+            'specifications': json.dumps([
+                {'name': '规格', 'options': ['7袋装', '15袋装', '30袋装']},
+                {'name': '口味', 'options': ['原味', '盐焗', '混合']}
+            ])
+        },
+        {
+            'name': '精品手冲咖啡豆',
+            'description': '埃塞俄比亚耶加雪菲，水洗处理。柑橘花香，酸质明亮。中度烘焙，适合手冲。250g真空包装，新鲜烘焙。',
+            'price': 88.00,
+            'image_url': '/images/coffeebeans.jpg',
+            'category': 'food',
+            'stock': 90,
+            'specifications': json.dumps([
+                {'name': '产地', 'options': ['耶加雪菲', '哥伦比亚', '曼特宁']},
+                {'name': '烘焙度', 'options': ['浅烘', '中烘', '深烘']},
+                {'name': '规格', 'options': ['250g', '500g', '1kg']}
+            ])
+        },
+        # ===== 图书文创 =====
+        {
+            'name': '真皮手账笔记本',
+            'description': '头层牛皮封面，质感细腻。A5尺寸，160页内页。方格/横线/空白可选，平摊书写。附赠书签带和笔扣。',
+            'price': 118.00,
+            'image_url': '/images/notebook.jpg',
+            'category': 'books',
+            'stock': 70,
+            'specifications': json.dumps([
+                {'name': '颜色', 'options': ['棕色', '黑色', '墨绿']},
+                {'name': '内页', 'options': ['横线', '方格', '空白']},
+                {'name': '尺寸', 'options': ['A6', 'A5', 'B5']}
+            ])
+        },
+        {
+            'name': '奢华金尖钢笔',
+            'description': '14K金尖，书写顺滑流畅。树脂笔身，金属拉丝工艺。旋转吸墨，附赠墨囊。礼盒包装，适合商务馈赠。',
+            'price': 288.00,
+            'image_url': '/images/pen.jpg',
+            'category': 'books',
+            'stock': 50,
+            'specifications': json.dumps([
+                {'name': '笔尖', 'options': ['EF尖', 'F尖', 'M尖']},
+                {'name': '颜色', 'options': ['黑色', '酒红', '藏青']}
+            ])
+        },
+        {
+            'name': '青花瓷茶具套装',
+            'description': '景德镇青花瓷，一壶四杯。含茶壶1把、品茗杯4只、公道杯1只。高温烧制，釉面光润。送礼收藏佳品。',
+            'price': 398.00,
+            'image_url': '/images/teapot.jpg',
+            'category': 'home',
+            'stock': 30,
+            'specifications': json.dumps([
+                {'name': '套装', 'options': ['一壶四杯', '一壶六杯', '功夫茶套装']},
+                {'name': '花色', 'options': ['青花', '粉彩', '素白']}
+            ])
         }
     ]
 
