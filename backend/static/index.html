@@ -567,6 +567,57 @@ input { font-family: inherit; }
 .order-footer .total-label { font-size: 14px; color: var(--gray-500); }
 .order-footer .total-value { font-size: 18px; font-weight: 700; color: var(--primary); }
 
+/* ===== Profile Page ===== */
+.profile-page { max-width: 700px; margin: 0 auto; padding: 32px 0; }
+.profile-header { background: linear-gradient(135deg, var(--primary), #7c3aed); border-radius: 16px; padding: 32px; color: white; margin-bottom: 24px; }
+.profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 16px; }
+.profile-name { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.profile-email { font-size: 14px; opacity: 0.8; }
+.profile-stats { display: flex; gap: 32px; margin-top: 20px; }
+.profile-stat-item { text-align: center; }
+.profile-stat-num { font-size: 24px; font-weight: 700; }
+.profile-stat-label { font-size: 12px; opacity: 0.7; margin-top: 4px; }
+.profile-section { background: var(--white); border-radius: 12px; box-shadow: var(--shadow-sm); margin-bottom: 16px; overflow: hidden; }
+.profile-section-title { font-size: 15px; font-weight: 600; color: var(--gray-800); padding: 16px 20px; border-bottom: 1px solid var(--gray-100); }
+.profile-menu-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; cursor: pointer; transition: background .2s; }
+.profile-menu-item:hover { background: var(--gray-50); }
+.profile-menu-item .pmi-left { display: flex; align-items: center; gap: 12px; }
+.profile-menu-item .pmi-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.pmi-icon.blue { background: var(--primary-light); }
+.pmi-icon.green { background: var(--success-light); }
+.pmi-icon.orange { background: var(--warning-light); }
+.pmi-icon.red { background: var(--danger-light); }
+.profile-menu-item .pmi-text { font-size: 14px; color: var(--gray-800); }
+.profile-menu-item .pmi-arrow { color: var(--gray-400); font-size: 14px; }
+
+/* ===== Payment Page ===== */
+.payment-page { max-width: 600px; margin: 0 auto; padding: 32px 0; }
+.payment-card { background: var(--white); border-radius: 12px; box-shadow: var(--shadow-sm); padding: 24px; margin-bottom: 20px; }
+.payment-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--gray-800); }
+.payment-methods { display: flex; flex-direction: column; gap: 12px; }
+.payment-method { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 2px solid var(--gray-200); border-radius: 12px; cursor: pointer; transition: all .2s; }
+.payment-method:hover { border-color: var(--primary-light); }
+.payment-method.selected { border-color: var(--primary); background: var(--primary-light); }
+.payment-method .pm-radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--gray-300); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.payment-method.selected .pm-radio { border-color: var(--primary); }
+.payment-method.selected .pm-radio::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); }
+.payment-method .pm-info { flex: 1; }
+.payment-method .pm-name { font-size: 14px; font-weight: 600; color: var(--gray-800); }
+.payment-method .pm-desc { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+.payment-method .pm-icon-text { font-size: 24px; }
+.payment-summary { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-top: 1px solid var(--gray-100); margin-top: 8px; }
+.payment-total-label { font-size: 14px; color: var(--gray-600); }
+.payment-total-amount { font-size: 24px; font-weight: 700; color: var(--primary); }
+
+/* ===== Pay Result ===== */
+.pay-result { text-align: center; padding: 60px 20px; }
+.pay-result-icon { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+.pay-result-icon.success { background: var(--success-light); }
+.pay-result-icon.fail { background: var(--danger-light); }
+.pay-result h2 { font-size: 22px; margin-bottom: 8px; }
+.pay-result .pay-result-desc { color: var(--gray-500); margin-bottom: 24px; }
+.pay-result .pay-result-order { font-size: 13px; color: var(--gray-400); margin-bottom: 32px; }
+
 /* ===== Empty State ===== */
 .empty-state {
   text-align: center;
@@ -670,6 +721,7 @@ input { font-family: inherit; }
         购物车<span class="badge" id="cart-badge" style="display:none;">0</span>
       </a>
       <a class="nav-link" data-page="orders" href="#/orders" onclick="navigate('orders')">订单</a>
+      <a class="nav-link" data-page="profile" href="#/profile" onclick="navigate('profile')">我的</a>
     </nav>
   </div>
 </header>
@@ -695,6 +747,47 @@ input { font-family: inherit; }
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeCheckoutModal()">取消</button>
       <button class="btn btn-primary" onclick="submitOrder()">确认下单</button>
+    </div>
+  </div>
+</div>
+
+<!-- Payment Modal -->
+<div class="modal-overlay" id="payment-modal">
+  <div class="modal" style="max-width:480px;">
+    <h3>选择支付方式</h3>
+    <div class="payment-methods">
+      <div class="payment-method selected" onclick="selectPayment(this, 'alipay')">
+        <div class="pm-radio"></div>
+        <div class="pm-info">
+          <div class="pm-name">支付宝</div>
+          <div class="pm-desc">推荐使用，安全便捷</div>
+        </div>
+        <div class="pm-icon-text">&#128179;</div>
+      </div>
+      <div class="payment-method" onclick="selectPayment(this, 'wechat')">
+        <div class="pm-radio"></div>
+        <div class="pm-info">
+          <div class="pm-name">微信支付</div>
+          <div class="pm-desc">微信扫码支付</div>
+        </div>
+        <div class="pm-icon-text">&#128172;</div>
+      </div>
+      <div class="payment-method" onclick="selectPayment(this, 'card')">
+        <div class="pm-radio"></div>
+        <div class="pm-info">
+          <div class="pm-name">银行卡支付</div>
+          <div class="pm-desc">支持主流银行卡</div>
+        </div>
+        <div class="pm-icon-text">&#128179;</div>
+      </div>
+    </div>
+    <div class="payment-summary">
+      <span class="payment-total-label">支付金额</span>
+      <span class="payment-total-amount" id="payment-amount">¥0.00</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closePaymentModal()">取消</button>
+      <button class="btn btn-primary" id="confirm-pay-btn" onclick="confirmPayment()">确认支付</button>
     </div>
   </div>
 </div>
@@ -848,6 +941,15 @@ async function router() {
       break;
     case 'orders':
       await renderOrdersPage(app);
+      break;
+    case 'profile':
+      await renderProfilePage(app);
+      break;
+    case 'payment':
+      await renderPaymentPage(app);
+      break;
+    case 'payresult':
+      await renderPayResultPage(app);
       break;
     default:
       app.innerHTML = '<div class="empty-state"><div class="icon">&#128533;</div><div class="title">页面不存在</div><div class="desc">请返回首页</div><button class="btn btn-primary" onclick="navigate(\'home\')">返回首页</button></div>';
@@ -1232,6 +1334,10 @@ async function clearCart() {
 // ===== Checkout Modal =====
 function openCheckoutModal() {
   document.getElementById('checkout-modal').classList.add('show');
+  var savedName = localStorage.getItem('profile_name');
+  var savedEmail = localStorage.getItem('profile_email');
+  if (savedName) document.getElementById('customer-name').value = savedName;
+  if (savedEmail) document.getElementById('customer-email').value = savedEmail;
   document.getElementById('customer-name').focus();
 }
 
@@ -1244,6 +1350,8 @@ function closeCheckoutModal() {
 async function submitOrder() {
   var name = document.getElementById('customer-name').value.trim();
   var email = document.getElementById('customer-email').value.trim();
+  localStorage.setItem('profile_name', name);
+  localStorage.setItem('profile_email', email);
 
   if (!name) {
     showToast('请输入姓名', 'error');
@@ -1262,7 +1370,7 @@ async function submitOrder() {
       closeCheckoutModal();
       showToast('订单提交成功！', 'success');
       updateCartBadge();
-      navigate('orders');
+      navigate('payment');
     } else {
       showToast(res.message || '下单失败', 'error');
     }
@@ -1343,6 +1451,144 @@ async function renderOrdersPage(app) {
   } catch(e) {
     app.innerHTML = '<div class="container"><div class="orders-page"><h2>我的订单</h2><div class="empty-state"><div class="icon">&#9888;</div><div class="title">加载失败</div><div class="desc">请稍后重试</div></div></div></div>';
   }
+}
+
+// ===== Profile Page =====
+var _pendingPayOrder = null;
+
+async function renderProfilePage(app) {
+  app.innerHTML = '<div class="container"><div class="profile-page"><div class="loading"><div class="spinner"></div></div></div></div>';
+  try {
+    var sessionName = localStorage.getItem('profile_name') || '优选用户';
+    var sessionEmail = localStorage.getItem('profile_email') || '';
+    var ordersRes = await apiGet('/orders');
+    var orders = (ordersRes.success && ordersRes.data) ? ordersRes.data : [];
+    var totalSpent = orders.reduce(function(sum, o) { return sum + (o.total_amount || 0); }, 0);
+
+    var html = '<div class="container"><div class="profile-page">';
+    html += '<div class="profile-header">';
+    html += '  <div class="profile-avatar">&#128100;</div>';
+    html += '  <div class="profile-name" id="profile-display-name">' + sessionName + '</div>';
+    html += '  <div class="profile-email" id="profile-display-email">' + (sessionEmail || '未设置邮箱') + '</div>';
+    html += '  <div class="profile-stats">';
+    html += '    <div class="profile-stat-item"><div class="profile-stat-num">' + orders.length + '</div><div class="profile-stat-label">全部订单</div></div>';
+    html += '    <div class="profile-stat-item"><div class="profile-stat-num">\u00a5' + totalSpent.toFixed(2) + '</div><div class="profile-stat-label">累计消费</div></div>';
+    html += '  </div>';
+    html += '</div>';
+
+    html += '<div class="profile-section">';
+    html += '  <div class="profile-section-title">个人信息</div>';
+    html += '  <div class="profile-menu-item" onclick="editProfile()"><div class="pmi-left"><div class="pmi-icon blue">&#9998;</div><span class="pmi-text">编辑资料</span></div><span class="pmi-arrow">&#8250;</span></div>';
+    html += '</div>';
+
+    html += '<div class="profile-section">';
+    html += '  <div class="profile-section-title">订单管理</div>';
+    html += '  <div class="profile-menu-item" onclick="navigate(\'orders\')"><div class="pmi-left"><div class="pmi-icon green">&#128230;</div><span class="pmi-text">我的订单</span></div><span class="pmi-arrow">&#8250;</span></div>';
+    html += '  <div class="profile-menu-item" onclick="navigate(\'cart\')"><div class="pmi-left"><div class="pmi-icon orange">&#128722;</div><span class="pmi-text">购物车</span></div><span class="pmi-arrow">&#8250;</span></div>';
+    html += '</div>';
+
+    html += '<div class="profile-section">';
+    html += '  <div class="profile-section-title">设置</div>';
+    html += '  <div class="profile-menu-item" onclick="showToast(\'功能开发中\', \'info\')"><div class="pmi-left"><div class="pmi-icon blue">&#9881;</div><span class="pmi-text">系统设置</span></div><span class="pmi-arrow">&#8250;</span></div>';
+    html += '  <div class="profile-menu-item" onclick="showToast(\'功能开发中\', \'info\')"><div class="pmi-left"><div class="pmi-icon red">&#128274;</div><span class="pmi-text">账号安全</span></div><span class="pmi-arrow">&#8250;</span></div>';
+    html += '</div>';
+
+    html += '</div></div>';
+    app.innerHTML = html;
+  } catch(e) {
+    app.innerHTML = '<div class="container"><div class="profile-page"><div class="empty-state"><div class="icon">&#9888;</div><div class="title">加载失败</div><div class="desc">请稍后重试</div></div></div></div>';
+  }
+}
+
+function editProfile() {
+  var currentName = localStorage.getItem('profile_name') || '优选用户';
+  var currentEmail = localStorage.getItem('profile_email') || '';
+  var name = prompt('请输入您的昵称', currentName);
+  if (name !== null && name.trim()) {
+    localStorage.setItem('profile_name', name.trim());
+  }
+  var email = prompt('请输入您的邮箱', currentEmail);
+  if (email !== null) {
+    localStorage.setItem('profile_email', email.trim());
+  }
+  renderProfilePage(document.getElementById('app'));
+  showToast('资料已更新', 'success');
+}
+
+// ===== Payment =====
+function openPaymentModal() {
+  document.getElementById('payment-modal').classList.add('show');
+}
+
+function closePaymentModal() {
+  document.getElementById('payment-modal').classList.remove('show');
+  document.querySelectorAll('.payment-method').forEach(function(m) { m.classList.remove('selected'); });
+  document.querySelector('.payment-method').classList.add('selected');
+}
+
+function selectPayment(el, method) {
+  document.querySelectorAll('.payment-method').forEach(function(m) { m.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+async function confirmPayment() {
+  if (!_pendingPayOrder) return;
+  var btn = document.getElementById('confirm-pay-btn');
+  btn.disabled = true;
+  btn.textContent = '支付中...';
+  await new Promise(function(r) { setTimeout(r, 1500); });
+  closePaymentModal();
+  btn.disabled = false;
+  btn.textContent = '确认支付';
+  navigate('payresult?status=success&orderId=' + _pendingPayOrder.id + '&amount=' + _pendingPayOrder.total_amount);
+  _pendingPayOrder = null;
+}
+
+async function renderPaymentPage(app) {
+  try {
+    var ordersRes = await apiGet('/orders');
+    var orders = (ordersRes.success && ordersRes.data) ? ordersRes.data : [];
+    if (orders.length === 0) {
+      navigate('home');
+      return;
+    }
+    var latestOrder = orders[0];
+    _pendingPayOrder = latestOrder;
+    document.getElementById('payment-amount').textContent = '\u00a5' + latestOrder.total_amount.toFixed(2);
+    openPaymentModal();
+    app.innerHTML = '<div class="container"><div class="payment-page"><div class="payment-card"><h3>订单待支付</h3><p style="color:var(--gray-600);font-size:14px;">请选择支付方式完成付款</p></div></div></div>';
+  } catch(e) {
+    navigate('home');
+  }
+}
+
+async function renderPayResultPage(app) {
+  var hash = window.location.hash;
+  var statusMatch = hash.match(/status=([^&]+)/);
+  var orderIdMatch = hash.match(/orderId=([^&]+)/);
+  var amountMatch = hash.match(/amount=([^&]+)/);
+  var status = statusMatch ? statusMatch[1] : 'fail';
+  var orderId = orderIdMatch ? orderIdMatch[1] : '';
+  var amount = amountMatch ? parseFloat(amountMatch[1]) : 0;
+
+  var isSuccess = status === 'success';
+  var html = '<div class="container"><div class="pay-result">';
+  html += '  <div class="pay-result-icon ' + (isSuccess ? 'success' : 'fail') + '">' + (isSuccess ? '&#10004;' : '&#10008;') + '</div>';
+  html += '  <h2>' + (isSuccess ? '支付成功' : '支付失败') + '</h2>';
+  html += '  <div class="pay-result-desc">' + (isSuccess ? '您的订单已支付成功，我们将尽快为您发货' : '支付未完成，请重新尝试') + '</div>';
+  if (isSuccess && orderId) {
+    html += '  <div class="pay-result-order">订单号：' + orderId + '  |  支付金额：\u00a5' + amount.toFixed(2) + '</div>';
+  }
+  html += '  <div style="display:flex;gap:12px;justify-content:center;">';
+  html += '    <button class="btn btn-outline" onclick="navigate(\'home\')">返回首页</button>';
+  if (isSuccess) {
+    html += '    <button class="btn btn-primary" onclick="navigate(\'orders\')">查看订单</button>';
+  } else {
+    html += '    <button class="btn btn-primary" onclick="navigate(\'payment\')">重新支付</button>';
+  }
+  html += '  </div>';
+  html += '</div></div>';
+  app.innerHTML = html;
 }
 </script>
 </body>
