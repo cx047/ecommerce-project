@@ -810,6 +810,26 @@ var IMG_LG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
 var IMG_XS1 = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgZmlsbD0iI2U1ZTdlYiI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIiBmb250LXNpemU9IjEyIiBmaWxsPSIjOWNhM2FmIj5OL0E8L3RleHQ+PC9zdmc+';
 var IMG_XS2 = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NiIgaGVpZ2h0PSI1NiIgZmlsbD0iI2U1ZTdlYiI+PHJlY3Qgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIiBmb250LXNpemU9IjEwIiBmaWxsPSIjOWNhM2FmIj5OL0E8L3RleHQ+PC9zdmc+';
 
+var CATEGORY_COLORS = {'electronics': '#3b82f6', 'clothing': '#ec4899', 'home': '#10b981'};
+function genProductImg(p, w, h) {
+  if (p.image_url) return p.image_url;
+  var name = p.name || '商品';
+  var price = p.price || 0;
+  var color = CATEGORY_COLORS[p.category] || '#6366f1';
+  var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">'
+    + '<defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">'
+    + '<stop offset="0%" style="stop-color:' + color + '"/>'
+    + '<stop offset="100%" style="stop-color:' + color + ';stop-opacity:0.7"/>'
+    + '</linearGradient></defs>'
+    + '<rect width="' + w + '" height="' + h + '" fill="url(#g)"/>'
+    + '<circle cx="' + (w/2) + '" cy="' + (h*0.38) + '" r="' + Math.min(w,h)*0.16 + '" fill="rgba(255,255,255,0.25)"/>'
+    + '<text x="' + (w/2) + '" y="' + (h*0.43) + '" text-anchor="middle" font-size="' + Math.min(w,h)*0.13 + '" fill="white" font-family="sans-serif" font-weight="bold">' + name.charAt(0) + '</text>'
+    + '<text x="' + (w/2) + '" y="' + (h*0.65) + '" text-anchor="middle" font-size="' + Math.min(w,h)*0.08 + '" fill="white" font-family="sans-serif" font-weight="600">' + name + '</text>'
+    + '<text x="' + (w/2) + '" y="' + (h*0.76) + '" text-anchor="middle" font-size="' + Math.min(w,h)*0.06 + '" fill="rgba(255,255,255,0.85)" font-family="sans-serif">\u00a5' + price + '</text>'
+    + '</svg>';
+  return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+}
+
 function getSessionId() {
   let sid = localStorage.getItem('session_id');
   if (!sid) {
@@ -1097,7 +1117,7 @@ async function loadProducts(category, search) {
 
     var html = '';
     products.forEach(function(p) {
-      var imgSrc = p.image_url || IMG_SM;
+      var imgSrc = genProductImg(p, 400, 300);
       var desc = p.description || '';
       html += '<div class="product-card" onclick="navigate(\'product/' + p.id + '\')">';
       html += '  <div class="img-wrap"><img src="' + imgSrc + '" alt="' + (p.name || '') + '" loading="lazy" onerror="this.src=IMG_SM"/></div>';
@@ -1148,7 +1168,7 @@ async function renderProductPage(app, productId) {
     }
     var p = res.data;
     var stockInfo = getStockInfo(p.stock || 0);
-    var imgSrc = p.image_url || IMG_LG;
+    var imgSrc = genProductImg(p, 600, 450);
     window._selectedSpecs = {};
     window._currentProductSpecs = p.specifications || [];
     var hasSpecs = window._currentProductSpecs.length > 0;
@@ -1252,7 +1272,7 @@ async function renderCartPage(app) {
       var price = (item.product && item.product.price) || item.price || 0;
       var subtotal = price * item.quantity;
       total += subtotal;
-      var imgSrc = (item.product && item.product.image_url) || item.image_url || IMG_XS1;
+      var imgSrc = genProductImg(item.product || item, 80, 80);
       var pName = (item.product && item.product.name) || item.name || '未知商品';
 
       itemsHtml += '<div class="cart-item" data-id="' + item.id + '">';
@@ -1425,7 +1445,7 @@ async function renderOrdersPage(app) {
         var price = item.price || 0;
         var subtotal = price * qty;
         orderTotal += subtotal;
-        var imgSrc = (item.product && item.product.image_url) || item.image_url || IMG_XS2;
+        var imgSrc = genProductImg(item.product || item, 56, 56);
 
         itemsHtml += '<div class="order-item">';
         itemsHtml += '  <div class="oi-img"><img src="' + imgSrc + '" alt="' + pName + '" onerror="this.style.display=\'none\'"/></div>';
