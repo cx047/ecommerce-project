@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>优选商城 - 品质生活，优选好物</title>
 <style>
 /* ===== Reset & Base ===== */
@@ -1542,12 +1545,15 @@ async function confirmPayment() {
   var btn = document.getElementById('confirm-pay-btn');
   btn.disabled = true;
   btn.textContent = '支付中...';
+  var orderInfo = { id: _pendingPayOrder.id, total_amount: _pendingPayOrder.total_amount };
   await new Promise(function(r) { setTimeout(r, 1500); });
   closePaymentModal();
   btn.disabled = false;
   btn.textContent = '确认支付';
-  navigate('payresult?status=success&orderId=' + _pendingPayOrder.id + '&amount=' + _pendingPayOrder.total_amount);
   _pendingPayOrder = null;
+  // Directly render result to avoid route caching issues
+  window.location.hash = '/payresult?status=success&orderId=' + orderInfo.id + '&amount=' + orderInfo.total_amount;
+  await renderPayResultPage(document.getElementById('app'));
 }
 
 async function renderPaymentPage(app) {
