@@ -906,9 +906,15 @@ function navigate(page) {
 function getRoute() {
   var hash = window.location.hash.replace('#', '') || '/';
   if (hash === '/' || hash === '') return { page: 'home', params: {} };
+  var queryString = '';
+  var qIndex = hash.indexOf('?');
+  if (qIndex !== -1) {
+    queryString = hash.substring(qIndex + 1);
+    hash = hash.substring(0, qIndex);
+  }
   var parts = hash.split('/').filter(Boolean);
   var page = parts[0];
-  var params = {};
+  var params = { queryString: queryString };
   if (page === 'product' && parts[1]) {
     params.id = parts[1];
   }
