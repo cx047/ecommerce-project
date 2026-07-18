@@ -703,6 +703,8 @@ input { font-family: inherit; }
 <script>
 // ===== API Helpers =====
 const API_BASE = '/api';
+const CATEGORY_MAP = {'electronics': '数码电子', 'clothing': '服饰穿搭', 'home': '家居生活'};
+function catLabel(key) { return CATEGORY_MAP[key] || key; }
 
 function getSessionId() {
   let sid = localStorage.getItem('session_id');
@@ -722,6 +724,7 @@ function getHeaders() {
 
 async function apiGet(path) {
   const res = await fetch(API_BASE + path, { headers: getHeaders() });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
   const json = await res.json();
   return json;
 }
@@ -732,6 +735,7 @@ async function apiPost(path, body) {
     headers: getHeaders(),
     body: JSON.stringify(body)
   });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
   const json = await res.json();
   return json;
 }
@@ -742,6 +746,7 @@ async function apiPut(path, body) {
     headers: getHeaders(),
     body: JSON.stringify(body)
   });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
   const json = await res.json();
   return json;
 }
@@ -751,6 +756,7 @@ async function apiDelete(path) {
     method: 'DELETE',
     headers: getHeaders()
   });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
   const json = await res.json();
   return json;
 }
@@ -916,11 +922,12 @@ async function renderHomePage(app) {
     var tabsHtml = '<button class="category-tab active" data-cat="全部" onclick="handleCategoryClick(this, \'全部\')">全部</button>';
     if (Array.isArray(categories)) {
       categories.forEach(function(cat) {
-        tabsHtml += '<button class="category-tab" data-cat="' + cat + '" onclick="handleCategoryClick(this, \'' + cat + '\')">' + cat + '</button>';
+        tabsHtml += '<button class="category-tab" data-cat="' + cat + '" onclick="handleCategoryClick(this, \'' + cat + '\')">' + catLabel(cat) + '</button>';
       });
     }
     document.getElementById('category-tabs').innerHTML = tabsHtml;
   } catch(e) {
+    console.error('加载分类失败:', e);
     // keep default tabs
   }
 
@@ -985,7 +992,8 @@ async function loadProducts(category, search) {
     });
     grid.innerHTML = html;
   } catch(e) {
-    grid.innerHTML = '<div class="empty-state"><div class="icon">&#9888;</div><div class="title">加载失败</div><div class="desc">请稍后重试</div></div>';
+    console.error('加载商品失败:', e);
+    grid.innerHTML = '<div class="empty-state"><div class="icon">&#9888;</div><div class="title">加载失败</div><div class="desc">' + e.message + '</div></div>';
   }
 }
 
@@ -1026,7 +1034,7 @@ async function renderProductPage(app, productId) {
     html += '      <div class="price">' + (p.price || 0).toFixed(2) + '</div>';
     html += '      <div class="desc">' + (p.description || '暂无描述') + '</div>';
     html += '      <div class="meta">';
-    html += '        <div class="meta-item"><span class="meta-label">分类：</span>' + (p.category || '未分类') + '</div>';
+    html += '        <div class="meta-item"><span class="meta-label">分类：</span>' + catLabel(p.category || '未分类') + '</div>';
     html += '        <div class="meta-item"><span class="stock-badge ' + stockInfo.cls + '">' + stockInfo.text + '</span></div>';
     html += '      </div>';
     html += '      <button class="btn-add-cart" ' + (p.stock <= 0 ? 'disabled' : '') + ' onclick="addToCartFromDetail(' + p.id + ')">' + (p.stock <= 0 ? '已售罄' : '加入购物车') + '</button>';
