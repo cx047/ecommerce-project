@@ -298,6 +298,10 @@ def create_app(config_class=Config):
     def serve_frontend():
         return send_from_directory('static', 'index.html')
 
+    @app.route('/images/<path:filename>')
+    def serve_image(filename):
+        return send_from_directory('static/images', filename)
+
     # ========== Health Check ==========
     @app.route('/api/health', methods=['GET'])
     def health_check():
