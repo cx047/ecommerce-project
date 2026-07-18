@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from config import Config
 from models import db, Product, CartItem, Order, OrderItem
@@ -286,6 +286,11 @@ def create_app(config_class=Config):
             'data': order.to_dict()
         })
     
+    # ========== Static Frontend ==========
+    @app.route('/')
+    def serve_frontend():
+        return send_from_directory('static', 'index.html')
+
     # ========== Health Check ==========
     @app.route('/api/health', methods=['GET'])
     def health_check():
