@@ -4,6 +4,7 @@ from config import Config
 from models import db, Product, CartItem, Order, OrderItem
 from seed_data import seed_database
 import uuid
+import json
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -97,6 +98,7 @@ def create_app(config_class=Config):
         
         product_id = data.get('product_id')
         quantity = data.get('quantity', 1)
+        selected_specs = data.get('selected_specs', {})
         
         if not product_id:
             return jsonify({'success': False, 'error': 'Product ID is required'}), 400
@@ -109,10 +111,13 @@ def create_app(config_class=Config):
                 'error': f'Not enough stock. Available: {product.stock}'
             }), 400
         
-        # Check if item already in cart
+        specs_json = json.dumps(selected_specs) if selected_specs else None
+        
+        # Check if same product with same specs already in cart
         cart_item = CartItem.query.filter_by(
             session_id=session_id, 
-            product_id=product_id
+            product_id=product_id,
+            selected_specs=specs_json
         ).first()
         
         if cart_item:
@@ -121,6 +126,7 @@ def create_app(config_class=Config):
             cart_item = CartItem(
                 product_id=product_id,
                 quantity=quantity,
+                selected_specs=specs_json,
                 session_id=session_id
             )
             db.session.add(cart_item)
@@ -254,7 +260,8 @@ def create_app(config_class=Config):
                     order_id=order.id,
                     product_id=cart_item.product_id,
                     quantity=cart_item.quantity,
-                    price_at_time=cart_item.product.price
+                    price_at_time=cart_item.product.price,
+                    selected_specs=cart_item.selected_specs
                 )
                 db.session.add(order_item)
                 

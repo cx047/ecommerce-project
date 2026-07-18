@@ -308,6 +308,15 @@ input { font-family: inherit; }
   align-self: flex-start;
 }
 .btn-add-cart:hover { background: var(--primary-dark); }
+.spec-section { margin: 16px 0; }
+.spec-title { font-size: 14px; font-weight: 600; color: var(--gray-700); margin-bottom: 8px; }
+.spec-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.spec-btn { padding: 6px 16px; border: 1.5px solid var(--gray-300); border-radius: 20px; background: var(--white); color: var(--gray-700); font-size: 13px; cursor: pointer; transition: all .2s; }
+.spec-btn:hover { border-color: var(--primary); color: var(--primary); }
+.spec-btn.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary); font-weight: 600; }
+.spec-btn:disabled { opacity: .5; cursor: not-allowed; }
+.item-specs { font-size: 12px; color: var(--gray-500); margin-top: 4px; }
+.oi-specs { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
 .btn-add-cart:disabled {
   background: var(--gray-300);
   cursor: not-allowed;
@@ -990,7 +999,8 @@ async function loadProducts(category, search) {
       html += '    <div class="name">' + (p.name || '') + '</div>';
       html += '    <div class="desc">' + desc + '</div>';
       html += '    <div class="price">' + (p.price || 0).toFixed(2) + '</div>';
-      html += '    <button class="btn-cart" onclick="event.stopPropagation(); addToCartFromHome(' + p.id + ')">加入购物车</button>';
+      var hasSpecs = p.specifications && Array.isArray(p.specifications) && p.specifications.length > 0;
+      html += '    <button class="btn-cart" onclick="event.stopPropagation(); addToCartFromHome(' + p.id + ', ' + hasSpecs + ')">加入购物车</button>';
       html += '  </div>';
       html += '</div>';
     });
@@ -1001,7 +1011,12 @@ async function loadProducts(category, search) {
   }
 }
 
-async function addToCartFromHome(productId) {
+async function addToCartFromHome(productId, hasSpecs) {
+  if (hasSpecs) {
+    navigate('product/' + productId);
+    showToast('请选择规格后购买', 'info');
+    return;
+  }
   try {
     var res = await apiPost('/cart', { product_id: productId, quantity: 1 });
     if (res.success) {
@@ -1028,6 +1043,9 @@ async function renderProductPage(app, productId) {
     var p = res.data;
     var stockInfo = getStockInfo(p.stock || 0);
     var imgSrc = p.image_url || IMG_LG;
+    window._selectedSpecs = {};
+    window._currentProductSpecs = p.specifications || [];
+    var hasSpecs = window._currentProductSpecs.length > 0;
 
     var html = '<div class="container"><div class="detail-page">';
     html += '  <div class="detail-back" onclick="navigate(\'home\')">&#8592; 返回首页</div>';
@@ -1041,6 +1059,26 @@ async function renderProductPage(app, productId) {
     html += '        <div class="meta-item"><span class="meta-label">分类：</span>' + catLabel(p.category || '未分类') + '</div>';
     html += '        <div class="meta-item"><span class="stock-badge ' + stockInfo.cls + '">' + stockInfo.text + '</span></div>';
     html += '      </div>';
+
+    if (hasSpecs) {
+      p.specifications.forEach(function(spec) {
+        html += '<div class="spec-section">';
+        html += '  <div class="spec-title">' + spec.name + '</div>';
+        html += '  <div class="spec-options">';
+        spec.options.forEach(function(opt) {
+          html += '    <button class="spec-btn" data-spec-name="' + spec.name + '" data-spec-opt="' + opt + '" onclick="selectSpec(this, \'' + spec.name + '\', \'' + opt + '\')">' + opt + '</button>';
+        });
+        html += '  </div>';
+        html += '</div>';
+      });
+    }
+
+    html += '      <div class="qty-control" style="align-self:flex-start;">';
+    html += '        <button class="qty-btn" onclick="var el=document.getElementById(\'detail-qty\'); var v=parseInt(el.value); if(v>1) el.value=v-1;">-</button>';
+    html += '        <input class="qty-value" id="detail-qty" value="1" readonly />';
+    html += '        <button class="qty-btn" onclick="var el=document.getElementById(\'detail-qty\'); var v=parseInt(el.value); el.value=v+1;">+</button>';
+    html += '      </div>';
+
     html += '      <button class="btn-add-cart" ' + (p.stock <= 0 ? 'disabled' : '') + ' onclick="addToCartFromDetail(' + p.id + ')">' + (p.stock <= 0 ? '已售罄' : '加入购物车') + '</button>';
     html += '    </div>';
     html += '  </div>';
@@ -1051,9 +1089,34 @@ async function renderProductPage(app, productId) {
   }
 }
 
+function selectSpec(btn, specName, opt) {
+  var buttons = btn.parentElement.querySelectorAll('.spec-btn');
+  buttons.forEach(function(b) { b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  window._selectedSpecs[specName] = opt;
+}
+
 async function addToCartFromDetail(productId) {
   try {
-    var res = await apiPost('/cart', { product_id: productId, quantity: 1 });
+    var specs = window._currentProductSpecs || [];
+    var selected = window._selectedSpecs || {};
+    if (specs.length > 0) {
+      var allSelected = true;
+      for (var i = 0; i < specs.length; i++) {
+        if (!selected[specs[i].name]) {
+          allSelected = false;
+          break;
+        }
+      }
+      if (!allSelected) {
+        showToast('请先选择商品规格', 'error');
+        return;
+      }
+    }
+    var qtyEl = document.getElementById('detail-qty');
+    var qty = qtyEl ? parseInt(qtyEl.value) || 1 : 1;
+    var payload = { product_id: productId, quantity: qty, selected_specs: specs.length > 0 ? selected : {} };
+    var res = await apiPost('/cart', payload);
     if (res.success) {
       showToast('已加入购物车', 'success');
       updateCartBadge();
@@ -1090,6 +1153,9 @@ async function renderCartPage(app) {
       itemsHtml += '  <div class="item-info">';
       itemsHtml += '    <div class="item-name">' + pName + '</div>';
       itemsHtml += '    <div class="item-price">' + (item.price || 0).toFixed(2) + '</div>';
+      if (item.spec_details) {
+        itemsHtml += '    <div class="item-specs">' + item.spec_details + '</div>';
+      }
       itemsHtml += '  </div>';
       itemsHtml += '  <div class="qty-control">';
       itemsHtml += '    <button class="qty-btn" onclick="updateCartQty(' + item.id + ', ' + (item.quantity - 1) + ')">-</button>';
@@ -1253,6 +1319,9 @@ async function renderOrdersPage(app) {
         itemsHtml += '  <div class="oi-info">';
         itemsHtml += '    <div class="oi-name">' + pName + '</div>';
         itemsHtml += '    <div class="oi-qty">x' + qty + '</div>';
+        if (item.spec_details) {
+          itemsHtml += '    <div class="oi-specs">' + item.spec_details + '</div>';
+        }
         itemsHtml += '  </div>';
         itemsHtml += '  <div class="oi-price">' + price.toFixed(2) + '</div>';
         itemsHtml += '</div>';

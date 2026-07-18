@@ -1,10 +1,11 @@
 from models import db, Product
+import json
 
 def seed_database():
     """Seed the database with sample products if empty"""
     if Product.query.first():
         return  # Database already has data
-    
+
     sample_products = [
         {
             'name': '无线蓝牙耳机 Pro',
@@ -12,7 +13,11 @@ def seed_database():
             'price': 299.00,
             'image_url': 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop',
             'category': 'electronics',
-            'stock': 50
+            'stock': 50,
+            'specifications': json.dumps([
+                {'name': '颜色', 'options': ['曜石黑', '象牙白', '天空蓝']},
+                {'name': '版本', 'options': ['标准版', '降噪版']}
+            ])
         },
         {
             'name': '智能运动手表',
@@ -20,7 +25,11 @@ def seed_database():
             'price': 599.00,
             'image_url': 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop',
             'category': 'electronics',
-            'stock': 30
+            'stock': 30,
+            'specifications': json.dumps([
+                {'name': '颜色', 'options': ['深空灰', '星光银', '玫瑰金']},
+                {'name': '表带', 'options': ['硅胶', '金属', '真皮']}
+            ])
         },
         {
             'name': '极简纯棉T恤',
@@ -28,7 +37,11 @@ def seed_database():
             'price': 89.00,
             'image_url': 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=300&fit=crop',
             'category': 'clothing',
-            'stock': 200
+            'stock': 200,
+            'specifications': json.dumps([
+                {'name': '颜色', 'options': ['白色', '黑色', '灰色', '藏青']},
+                {'name': '尺码', 'options': ['S', 'M', 'L', 'XL', 'XXL']}
+            ])
         },
         {
             'name': '复古牛仔外套',
@@ -36,7 +49,11 @@ def seed_database():
             'price': 259.00,
             'image_url': 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=300&fit=crop',
             'category': 'clothing',
-            'stock': 80
+            'stock': 80,
+            'specifications': json.dumps([
+                {'name': '颜色', 'options': ['浅蓝', '深蓝', '黑色']},
+                {'name': '尺码', 'options': ['S', 'M', 'L', 'XL']}
+            ])
         },
         {
             'name': '意式浓缩咖啡机',
@@ -44,7 +61,11 @@ def seed_database():
             'price': 899.00,
             'image_url': 'https://images.unsplash.com/photo-1517914309578-2742d2f0639f?w=400&h=300&fit=crop',
             'category': 'home',
-            'stock': 20
+            'stock': 20,
+            'specifications': json.dumps([
+                {'name': '颜色', 'options': ['经典银', '复古红']},
+                {'name': '功率', 'options': ['850W', '1050W']}
+            ])
         },
         {
             'name': '北欧风台灯',
@@ -52,7 +73,11 @@ def seed_database():
             'price': 159.00,
             'image_url': 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=300&fit=crop',
             'category': 'home',
-            'stock': 60
+            'stock': 60,
+            'specifications': json.dumps([
+                {'name': '颜色', 'options': ['白色', '原木色', '深灰']},
+                {'name': '光源', 'options': ['暖光', '白光', '三色变光']}
+            ])
         },
         {
             'name': '机械键盘 RGB',
@@ -60,7 +85,11 @@ def seed_database():
             'price': 399.00,
             'image_url': 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=300&fit=crop',
             'category': 'electronics',
-            'stock': 40
+            'stock': 40,
+            'specifications': json.dumps([
+                {'name': '轴体', 'options': ['青轴', '红轴', '茶轴']},
+                {'name': '配色', 'options': ['黑白', '粉白', '灰白']}
+            ])
         },
         {
             'name': '便携双肩背包',
@@ -68,7 +97,11 @@ def seed_database():
             'price': 199.00,
             'image_url': 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop',
             'category': 'clothing',
-            'stock': 100
+            'stock': 100,
+            'specifications': json.dumps([
+                {'name': '颜色', 'options': ['黑色', '灰色', '军绿']},
+                {'name': '容量', 'options': ['20L', '25L']}
+            ])
         },
         {
             'name': '香薰蜡烛套装',
@@ -76,7 +109,11 @@ def seed_database():
             'price': 129.00,
             'image_url': 'https://images.unsplash.com/photo-1602607683528-e7c1352d7e7a?w=400&h=300&fit=crop',
             'category': 'home',
-            'stock': 70
+            'stock': 70,
+            'specifications': json.dumps([
+                {'name': '香型', 'options': ['薰衣草', '柑橘', '檀香']},
+                {'name': '规格', 'options': ['单罐', '三罐套装']}
+            ])
         },
         {
             'name': '无线充电器',
@@ -84,13 +121,17 @@ def seed_database():
             'price': 79.00,
             'image_url': 'https://images.unsplash.com/photo-1586816879360-004f5b0c51e3?w=400&h=300&fit=crop',
             'category': 'electronics',
-            'stock': 150
+            'stock': 150,
+            'specifications': json.dumps([
+                {'name': '颜色', 'options': ['白色', '黑色']},
+                {'name': '功率', 'options': ['10W', '15W']}
+            ])
         }
     ]
-    
+
     for product_data in sample_products:
         product = Product(**product_data)
         db.session.add(product)
-    
+
     db.session.commit()
     print(f"Seeded {len(sample_products)} products to database")
